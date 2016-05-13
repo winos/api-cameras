@@ -25,7 +25,7 @@ class Devices_Controller
   }
 
   private function castTypeVehicle ($typeVehicleId) {
-    $types = array('1'=> 'AUTOMOVIL', '2' => 'BUS', '9'=> 'MOTOCICLETA');
+    $types = array('1'=> 'AUTOMOVIL', '2' => 'BUS', '9'=> 'MOTOCICLETA', '5'=>'CAMIONETA');
     return $types[$typeVehicleId];
   }
 
@@ -38,14 +38,14 @@ class Devices_Controller
   public function get()
   {
     // Set the response headers...
-    $response['objects'] = $response = array();
+    $response['data'] = $response = array();
     $params = $this->app->request()->params();
 
     $userId  = $params['userId'];
     $groups  = $params['groups'];
     $objectTypes  = $params['objectTypes'];
 
-    try{
+    try {
 
       $valToModel = array("userId" => $userId, "groups" => $groups, "objectTypes" => $objectTypes);
       $resultModel = $this->_devices_model->getDevices($valToModel);
@@ -59,10 +59,15 @@ class Devices_Controller
 
             case '24': // Vehiculo
               $vehiculos = $this->_devices_model->getDevicesVehiclesProperties((int)$row['object_id']);
-              $response['objects'][$key]['deviceId'] = $row['object_id'];
-              $response['objects'][$key]['name'] = $vehiculos['tracker_licence_plate'];
-              $response['objects'][$key]['type_vehicle'] = self::castTypeVehicle($vehiculos['type_vehicle_id']);
-              $response['objects'][$key]['phone'] = self::castTypeVehicle($vehiculos['tracker_phone_number']);
+              if (isset($vehiculos['tracker_imei'])) {
+                $data = array(
+                  'deviceId'=> $row['object_id'],
+                  'name'=> $vehiculos['tracker_license_plate'],
+                  'type_vehicle'=>self::castTypeVehicle($vehiculos['type_vehicle_id']),
+                  'phone' => $vehiculos['tracker_phone_number'],
+                  'imei' => $vehiculos['tracker_imei']);
+                $response['data'][] =  $data;
+              }
             break;
 
             case '25': // Tracker
@@ -73,7 +78,7 @@ class Devices_Controller
           }
         }
 
-        $response['data'] = $resultModel['objects'];
+        //$response['data'] = $resultModel['objects'];
         $response['status'] = true;
 
       } else {
