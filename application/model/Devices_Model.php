@@ -28,12 +28,13 @@ class Devices_Model
         $resultOperationObjectId = array();
 
         try {
+
 						$stm = 'SELECT cc37_object_id AS object_id, cc37_cc38_object_type_id as object_type_id FROM tc37_grants_users ' .
-						'WHERE cc37_cc38_object_type_id IN ( ' . $objectTypes . ' ) '.
+						'WHERE cc37_cc38_object_type_id IN(' . $objectTypes . ') '.
 						'AND cc37_cs18_user_id =  ' . $userId . ' ' .
 						'UNION ' .
 						'SELECT cc22_object_id AS object_id, cc22_cc38_object_type_id as object_type_id FROM tc22_grants_groups ' .
-						'WHERE cc22_cc38_object_type_id IN (' . $objectTypes . ') ' .
+						'WHERE cc22_cc38_object_type_id IN(' . $objectTypes . ') ' .
 						'AND cc22_cs08_group_id IN(' . $groups . ') ' .
 						'GROUP BY object_id ' .
 						'ORDER BY object_id ASC;';
@@ -51,16 +52,17 @@ class Devices_Model
 
 					try {
 						$stm = 'SELECT cs56_tracker_id AS tracker_id, cc109_cc67_type_vehicle_id AS type_vehicle_id, cs56_imei AS tracker_imei, cs56_phone_number AS tracker_phone_number, cc109_vehicle_id AS tracker_vehicle_id, ' .
-						'cc109_licence_plate AS tracker_licence_plate, cs80_code AS tracker_model, cs78_code AS type_tracker_code ' .
+						'cc109_license_plate AS tracker_license_plate, cs80_code AS tracker_model, cs78_code AS type_tracker_code ' .
 						'FROM tc109_vehicles, ts56_trackers, ts80_models_trackers, ts78_types_trackers ' .
-						'WHERE cc109_vehicle_id IN(' . $objectid . ')'.
+						'WHERE cc109_vehicle_id IN(' . $objectid . ') ' .
 						'AND cc109_cc02_state_id = 1 ' .
 						'AND cc109_cs56_tracker_id <> 0 '.
 						'AND cc109_cs56_tracker_id = cs56_tracker_id ' .
 						'AND cs56_cs80_model_tracker_id = cs80_model_tracker_id ' .
 						'AND cs80_cs78_type_tracker_id = cs78_type_tracker_id ' .
-						'ORDER BY cs57_vehicle_id ASC;';
-						$resultOperationObjectId = R::getRow($stm);
+						'ORDER BY cc109_vehicle_id ASC;';
+//die($stm);
+							$resultOperationObjectId = R::getRow($stm);
 
 					} catch (Exception $e) {
 

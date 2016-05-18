@@ -52,12 +52,15 @@ $app->hook('slim.before', function () use ($app) {
 $app->hook('slim.after', function () use ($app) {
     R::close();
 });
-
-$ruta = isset($_GET['ruta']) ? $_GET['ruta'] : null ;
+/*
+$app->get('/', array(new \NearCamera_Controller, 'get'));
+$app->get('/devices', array(new \Devices_Controller, 'get'));
+*/
+$ruta = (isset($_GET['ruta']) ? $_GET['ruta'] : null );
 if (!$ruta) {
-  $app->get('/', array(new \NearCamera_Controller, 'get'));
+	$app->get('/', array(new \NearCamera_Controller, 'get'));
 } else {
-  $app->get('/', array(new \Devices_Controller, 'get'));
+	$app->get('/', array(new \Devices_Controller, 'get'));
 }
 
 $app->run();

@@ -25,7 +25,7 @@ class Devices_Controller
   }
 
   private function castTypeVehicle ($typeVehicleId) {
-    $types = array('1'=> 'AUTOMOVIL', '2' => 'BUS', '9'=> 'MOTOCICLETA', '5'=>'CAMIONETA');
+    $types = array('1'=> 'AUTOMOVIL', '2' => 'BUS', '9'=> 'MOTOCICLETA', '5' => 'CAMIONETA', '4' => 'CAMION', '6' => 'BUSETA', '7' => 'MICRO BUS');
     return $types[$typeVehicleId];
   }
 
@@ -45,7 +45,7 @@ class Devices_Controller
     $groups  = $params['groups'];
     $objectTypes  = $params['objectTypes'];
 
-    try {
+    try{
 
       $valToModel = array("userId" => $userId, "groups" => $groups, "objectTypes" => $objectTypes);
       $resultModel = $this->_devices_model->getDevices($valToModel);
@@ -59,11 +59,13 @@ class Devices_Controller
 
             case '24': // Vehiculo
               $vehiculos = $this->_devices_model->getDevicesVehiclesProperties((int)$row['object_id']);
+              $vehiculos = $this->_devices_model->getDevicesVehiclesProperties((int)$row['object_id']);
               if (isset($vehiculos['tracker_imei'])) {
                 $data = array(
-                  'deviceId'=> $row['object_id'],
-                  'name'=> $vehiculos['tracker_license_plate'],
-                  'type_vehicle'=>self::castTypeVehicle($vehiculos['type_vehicle_id']),
+                  'deviceId' => $row['object_id'],
+                  'name' => $vehiculos['tracker_license_plate'],
+                  'object_type_id' => $row['object_type_id'],
+                  'type_vehicle' => self::castTypeVehicle($vehiculos['type_vehicle_id']),
                   'phone' => $vehiculos['tracker_phone_number'],
                   'imei' => $vehiculos['tracker_imei']);
                 $response['data'][] =  $data;
